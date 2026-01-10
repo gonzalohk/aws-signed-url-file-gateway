@@ -7,21 +7,52 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub "file-gateway-bucket-${AWS::AccountId}"
-
+    
   FileApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
+
+  FileGatewayS3Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "file-gateway-role-${AWS::StackName}"
+      Description: "Rol access File Gateway"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: FileGatewayS3Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # bucket
+              - Sid: S3ObjectAccess
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource: !Sub "arn:aws:s3:::${FileBucket}/*"
+              # CloudWatch
+              - Sid: LambdaLogging
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "arn:aws:logs:*:*:*"
 
   UploadFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: app.lambda_handler_upload
       CodeUri: src/
+      Role: !GetAtt FileGatewayS3Role.Arn
       Runtime: python3.12
-      Policies:
-        - S3WritePolicy:
-            BucketName: !Ref FileBucket
       Environment:
         Variables:
           BUCKET_NAME: !Ref FileBucket
@@ -38,10 +69,8 @@ Resources:
     Properties:
       Handler: app.lambda_handler_download
       CodeUri: src/
+      Role: !GetAtt FileGatewayS3Role.Arn
       Runtime: python3.12
-      Policies:
-        - S3ReadPolicy:
-            BucketName: !Ref FileBucket
       Environment:
         Variables:
           BUCKET_NAME: !Ref FileBucket
