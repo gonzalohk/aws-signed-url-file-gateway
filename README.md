@@ -49,7 +49,7 @@ Replace <API_ID> and <REGION> with your specific deployment values (found in the
 
 ### A. Generate an Upload URL (POST)
 ```
-curl -X POST https://<API_ID>.execute-api.<REGION>[.amazonaws.com/Prod/files](https://.amazonaws.com/Prod/files) \
+curl -X POST https://<API_ID>.execute-api.<REGION>[.amazonaws.com/Prod/files] \
      -H "Content-Type: application/json" \
      -d '{"filename": "lab4-test.txt"}'
 ```
@@ -63,5 +63,5 @@ curl -X PUT --upload-file "lab4-test.txt" "PASTE_UPLOAD_URL_HERE"
 Use -L to follow the HTTP 307 Redirect:
 
 ```
-curl -i -L https://<API_ID>.execute-api.<REGION>[.amazonaws.com/Prod/files/lab4-test.txt](https://.amazonaws.com/Prod/files/lab4-test.txt)
+curl -i -L https://<API_ID>.execute-api.<REGION>[.amazonaws.com/Prod/files/lab4-test.txt]
 ```
