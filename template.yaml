@@ -46,3 +46,16 @@ Resources:
             Path: /files/{objectKey}
             Method: get
             RestApiId: !Ref FileApi
+
+Outputs:
+  BucketName:
+    Description: "S3 Bucket for project"
+    Value: !Ref FileBucket
+
+  UploadApiEndpoint:
+    Description: "Endpoint to generate the upload URL (POST)"
+    Value: !Sub "https://${FileApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/files"
+
+  DownloadApiEndpoint:
+    Description: "Endpoint to generate the download URL (GET)"
+    Value: !Sub "https://${FileApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/files/{objectKey}"
