@@ -49,7 +49,7 @@ def lambda_handler_download(event, context):
                 "Location": download_url
             }
         }
-     except Exception as e:
+    except Exception as e:
         print(f"Error: {str(e)}") #  CloudWatch
         return {
             "statusCode": 500,
