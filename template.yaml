@@ -8,3 +8,41 @@ Resources:
     Properties:
       BucketName: !Sub "file-gateway-bucket-${AWS::AccountId}"
 
+  FileApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+
+  UploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler_upload
+      CodeUri: src/
+      Runtime: python3.12
+      Policies:
+        - S3WritePolicy:
+            BucketName: !Ref FileBucket
+      Events:
+        UploadAsset:
+          Type: Api
+          Properties:
+            Path: /files
+            Method: post
+            RestApiId: !Ref FileApi
+
+  DownloadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler_download
+      CodeUri: src/
+      Runtime: python3.12
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref FileBucket
+      Events:
+        DownloadAsset:
+          Type: Api
+          Properties:
+            Path: /files/{objectKey}
+            Method: get
+            RestApiId: !Ref FileApi
