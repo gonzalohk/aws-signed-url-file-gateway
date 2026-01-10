@@ -28,23 +28,30 @@ def lambda_handler_upload(event, context):
         print(f"Error: {str(e)}") #  CloudWatch
         return {
             "statusCode": 500,
-            "body": json.dumps({"error": "Error interno del servidor", "details": str(e)})
+            "body": json.dumps({"error": "Internal server error UPLOAD", "details": str(e)})
         }
 
 
 def lambda_handler_download(event, context):
-    object_key = event['pathParameters']['objectKey']
-    
-    # pre signed URL for GET
-    download_url = s3_client.generate_presigned_url(
-        'get_object',
-        Params={'Bucket': BUCKET_NAME, 'Key': object_key},
-        ExpiresIn=3600 # 1 hour
-    )
-    
-    return {
-        "statusCode": 307,
-        "headers": {
-            "Location": download_url
+    try:
+        object_key = event['pathParameters']['objectKey']
+        
+        # pre signed URL for GET
+        download_url = s3_client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': BUCKET_NAME, 'Key': object_key},
+            ExpiresIn=3600 # 1 hour
+        )
+        
+        return {
+            "statusCode": 307,
+            "headers": {
+                "Location": download_url
+            }
         }
-    }
+     except Exception as e:
+        print(f"Error: {str(e)}") #  CloudWatch
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Internal server error DOWNLOAD", "details": str(e)})
+        }
