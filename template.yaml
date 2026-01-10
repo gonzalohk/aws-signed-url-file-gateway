@@ -37,6 +37,11 @@ Resources:
                   - s3:PutObject
                   - s3:GetObject
                 Resource: !Sub "arn:aws:s3:::${FileBucket}/*"
+              - Sid: S3BucketAccess
+                Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !Sub "arn:aws:s3:::${FileGatewayBucket}"
               # CloudWatch
               - Sid: LambdaLogging
                 Effect: Allow
