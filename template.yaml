@@ -41,7 +41,7 @@ Resources:
                 Effect: Allow
                 Action:
                   - s3:ListBucket
-                Resource: !Sub "arn:aws:s3:::${FileGatewayBucket}"
+                Resource: !Sub "arn:aws:s3:::${FileBucket}"
               # CloudWatch
               - Sid: LambdaLogging
                 Effect: Allow
