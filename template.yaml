@@ -22,6 +22,9 @@ Resources:
       Policies:
         - S3WritePolicy:
             BucketName: !Ref FileBucket
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref FileBucket
       Events:
         UploadAsset:
           Type: Api
